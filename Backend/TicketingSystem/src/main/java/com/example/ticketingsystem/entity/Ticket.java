@@ -35,6 +35,10 @@ public class Ticket {
     Department currentDepartment;
 
 
+    @Column(name = "deleted", nullable = false)
+    private Boolean deleted = false;
+
+
     @ManyToOne
     @JoinColumn(
             name = "created_by_user_id",
@@ -42,8 +46,8 @@ public class Ticket {
     )
     private User createdByUser;
 
-    @Column(name = "ticket_status")
-    Boolean status;
+    @Column(name = "ticket_status",nullable = false)
+    Boolean status = false;
 
     @ManyToOne
     @JoinColumn(name = "category_id" ,referencedColumnName = "id")
