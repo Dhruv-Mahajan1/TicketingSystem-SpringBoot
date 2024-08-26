@@ -60,5 +60,13 @@ public class Ticket {
             cascade = {CascadeType.ALL}
     )
     private List<UserTicketMapping> assignedtotickets;
+
+
+    @OneToMany(
+            mappedBy = "ticket",
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.ALL}
+    )
+    private List<Comments> comments;
 }
 

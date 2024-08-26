@@ -7,7 +7,8 @@ import lombok.Getter;
 
 public class CommentRequestDto {
 
-
+    int ticketId;
     String description;
+
 
 }

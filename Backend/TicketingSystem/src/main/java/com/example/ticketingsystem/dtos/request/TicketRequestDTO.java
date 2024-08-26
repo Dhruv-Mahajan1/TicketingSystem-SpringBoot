@@ -17,9 +17,9 @@ public class TicketRequestDTO {
 
     private int expectedTime;
 
-    private String currentDepartment;
+    private int currentDepartment;
 
-    private String category;
+    private int category;
 
 
     private String ticketMappingStatus;

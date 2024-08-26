@@ -54,4 +54,18 @@ public class User {
     )
     private List<UserTicketMapping> assignedTickets;
 
+
+
+    @OneToMany(
+            mappedBy = "commentCreator",
+            fetch = FetchType.LAZY,
+            cascade = {CascadeType.ALL}
+    )
+    private List<Comments> comments;
+
+
+
+
+
+
 }

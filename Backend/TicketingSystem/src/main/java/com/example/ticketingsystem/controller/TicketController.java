@@ -58,12 +58,12 @@ public class TicketController {
     public Response<List< TicketResponseDTO>> filterTicket(
             @RequestParam(required = true) Boolean owner,
             @RequestParam(required = false) Boolean status,
-            @RequestParam(required = false) String category,
-            @RequestParam(required = false) String currentDepartment,
+            @RequestParam(required = false) Integer categoryId,
+            @RequestParam(required = false) Integer currentDepartmentId,
             @RequestParam(required = false) String mappingStatus
 
     ) {
-        List< TicketResponseDTO>  ticketResponseDTOList= ticketService.filterTickets(status,category,currentDepartment,owner, mappingStatus);
+        List< TicketResponseDTO>  ticketResponseDTOList= ticketService.filterTickets(status,categoryId,currentDepartmentId,owner, mappingStatus);
         return new Response<>(HttpStatus.OK.toString(), "Ticket found with provided filters", ticketResponseDTOList);
     }
 

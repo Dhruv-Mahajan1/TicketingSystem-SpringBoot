@@ -34,12 +34,4 @@ public class UserTicketMapping {
 
 
 
-    @OneToMany(
-            mappedBy = "userTicketMapping",
-            fetch = FetchType.LAZY,
-            cascade = {CascadeType.ALL}
-    )
-    List<Comments> comments;
-
-
 }

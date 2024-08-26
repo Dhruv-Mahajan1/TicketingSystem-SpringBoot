@@ -19,10 +19,17 @@ public class Comments {
     String commentDescription;
 
 
-    @ManyToOne
-    @JoinColumn(name = "user_ticket_mapping_id" ,referencedColumnName = "userTicketMappingId")
-    UserTicketMapping userTicketMapping;
+    @Column(name = "deleted")
+    Boolean deleted=false;
 
+
+    @ManyToOne
+    @JoinColumn(name = "comment_created_by_user_id", referencedColumnName = "user_id")
+    private User commentCreator;
+
+    @ManyToOne
+    @JoinColumn(name = "ticket_id", referencedColumnName = "ticket_id")
+    private Ticket ticket;
 
 
 

@@ -22,7 +22,7 @@ public interface TicketService {
     void deleteTicket(int id) throws Exception;
 
 
-    List<TicketResponseDTO>  filterTickets(Boolean status, String category, String currentDepartment,Boolean owner,String status1);
+    List<TicketResponseDTO>  filterTickets(Boolean status, Integer categoryId, Integer currentDepartmentId,Boolean owner,String status1);
 
 
 

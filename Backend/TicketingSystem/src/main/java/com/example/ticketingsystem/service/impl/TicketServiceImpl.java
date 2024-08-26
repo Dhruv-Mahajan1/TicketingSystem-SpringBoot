@@ -49,7 +49,7 @@ public class TicketServiceImpl implements TicketService {
     public TicketResponseDTO createTicket(TicketRequestDTO ticketRequestDTO) {
 
         Ticket ticket= TicketRequestDtoToTicket.convert(ticketRequestDTO);
-        CategoryMaster categoryMaster = categoryMasterRepo.findByName(ticketRequestDTO.getCategory()).orElseThrow(()->new NotFoundException("Category doesn't Exist"));
+        CategoryMaster categoryMaster = categoryMasterRepo.findById(ticketRequestDTO.getCategory()).orElseThrow(()->new NotFoundException("Category doesn't Exist"));
 
 
         ticket.setCategory(categoryMaster);
@@ -110,10 +110,10 @@ public class TicketServiceImpl implements TicketService {
             ticket.setTicketDescription(ticketRequestDTO.getDescription());
             ticket.setExpectedTime(ticketRequestDTO.getExpectedTime());
             ticket.setStatus(ticketRequestDTO.getStatus());
-            if(!Objects.equals(ticketRequestDTO.getCategory(), ticket.getCategory().getName())){
+            if(!Objects.equals(ticketRequestDTO.getCategory(), ticket.getCategory().getId())){
 
 
-                CategoryMaster categoryMaster=categoryMasterRepo.findByName(ticketRequestDTO.getCategory()).orElseThrow(()->  new NotFoundException("category not found"));
+                CategoryMaster categoryMaster=categoryMasterRepo.findById(ticketRequestDTO.getCategory()).orElseThrow(()->  new NotFoundException("category not found"));
                 ticket.setCategory(categoryMaster);
 
                 Optional<List<UserTicketMapping>> userTicketMappingList=userTicketMappingRepo.findByTicketId(id);
@@ -122,12 +122,15 @@ public class TicketServiceImpl implements TicketService {
                     mapping.setStatus(Status.DELETED_BY_OWNER);
                     userTicketMappingRepo.save(mapping);
                 }));
+                ticketRepo.save(ticket);
+                AssignmentEngine.assignTicket(ticket,userRepo,userTicketMappingRepo);
 
-                // have to send to assignment engine;
+            }
+            else {
+                ticketRepo.save(ticket);
 
             }
 
-            ticketRepo.save(ticket);
         }
         else{
 
@@ -181,30 +184,30 @@ public class TicketServiceImpl implements TicketService {
 
 
     @Override
-    public List<TicketResponseDTO> filterTickets(Boolean status, String category, String currentDepartment,Boolean owner,String status1) {
+    public List<TicketResponseDTO> filterTickets(Boolean status, Integer categoryId, Integer currentDepartmentId,Boolean owner,String status1) {
         User user=UserContext.getUser();
 
         List<TicketResponseDTO>ticketResponseDTOList = new ArrayList<>();
         if(owner)
         {
             List<Ticket> tickets = ticketRepo.getByCreatedByUser(user).orElseThrow(()-> new NotFoundException("tickets not found"));
-            System.out.print(status + " " + category +" " + currentDepartment);
+
             if (status != null) {
                 tickets = tickets.stream()
                         .filter(ticket -> ticket.getStatus().equals(status))
                         .collect(Collectors.toList());
             }
 
-            if (category != null) {
+            if (categoryId!=null) {
                 System.out.print("Dsdsds");
-                CategoryMaster categoryMaster=categoryMasterRepo.findByName(category).orElseThrow(()->  new NotFoundException("category not found"));
+                CategoryMaster categoryMaster=categoryMasterRepo.findById(categoryId).orElseThrow(()->  new NotFoundException("category not found"));
                 tickets = tickets.stream()
                         .filter(ticket -> ticket.getCategory().equals(categoryMaster))
                         .collect(Collectors.toList());
             }
 
-            if (currentDepartment != null) {
-                Department department=departmentRepo.findByName(currentDepartment).orElseThrow(()->new NotFoundException("Department Doesn't Exist"));
+            if (currentDepartmentId != null) {
+                Department department=departmentRepo.findById(currentDepartmentId).orElseThrow(()->new NotFoundException("Department Doesn't Exist"));
                 tickets = tickets.stream()
                         .filter(ticket -> ticket.getCurrentDepartment().equals(department))
                         .collect(Collectors.toList());
@@ -277,7 +280,7 @@ public class TicketServiceImpl implements TicketService {
 
 
 
-// FINDBYID; AVOID search by string /index
+// FINDBYID; AVOID search by string /index  done
 // paggination
 // concurrent  req
-// comments
+// comments   done
